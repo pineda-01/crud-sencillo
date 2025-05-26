@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend/personas.db:/app/personas.db  # Monta el archivo SQLite
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped  # Reinicia si falla
+
+  frontend:
+    build: .  # Usa el Dockerfile en la raíz
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_URL=http://backend:5000  # Para conexión entre contenedores
